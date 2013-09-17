@@ -191,6 +191,10 @@ def main():
     sc = SoccerClient()
     sc.connect(host, port)
 
+	#conjuntos fuzzy de distância da bola
+	ballClose = fuzzyLeftTrapezoid(100,150)
+	ballFar = fuzzyRightTrapezoid(80, 250)
+	
     #conjuntos fuzzy do ângulo em relação à bola
 
     ballLeft = fuzzyLeftTrapezoid(-math.pi, 0)
@@ -215,7 +219,7 @@ def main():
     #D D F
 
     rulesMatrix = [[0 for i in range(3)] for i in range(3)] #cria matriz de regras
-    rulesMatrix[0][0] = robotForward
+    rulesMatrix[0][0] = robotLeft
     rulesMatrix[0][1] = robotLeft  
     rulesMatrix[0][2] = robotLeft
     rulesMatrix[1][0] = robotRight
@@ -223,7 +227,7 @@ def main():
     rulesMatrix[1][2] = robotLeft
     rulesMatrix[2][0] = robotRight
     rulesMatrix[2][1] = robotRight
-    rulesMatrix[2][2] = robotForward
+    rulesMatrix[2][2] = robotRight
 
     ballFuzzySets = [ballLeft, ballForward, ballRight]
     targetFuzzySets = [targetLeft, targetForward, targetRight]
