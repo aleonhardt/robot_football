@@ -216,7 +216,7 @@ def main():
     robotForward = fuzzyLambda(-math.pi, 0, math.pi)
     robotRight = fuzzyRightTrapezoid(0, math.pi)
     
-    rulesMatrix = numpy.zeros((3,3,2)) # Make a 3 by 3 by 1 array
+    rulesMatrix = numpy.zeros((3,3,2), dtype=object) # Make a 3 by 3 by 1 array
 
     rulesMatrix[0][0][0] = robotLeft #close
     rulesMatrix[0][0][1] = robotLeft #far
