@@ -195,8 +195,8 @@ def main():
     sc.connect(host, port)
 
     #conjuntos fuzzy de distância da bola
-    ballClose = fuzzyLeftTrapezoid(100,150)
-    ballFar = fuzzyRightTrapezoid(80, 250)
+    ballClose = fuzzyLeftTrapezoid(70,100)
+    ballFar = fuzzyRightTrapezoid(50, 250)
 	
     #conjuntos fuzzy do ângulo em relação à bola
 
@@ -224,7 +224,7 @@ def main():
     #[distância, angulo bola, angulo gol]
     #close
     rulesMatrix[0][0][0] = robotLeft
-    rulesMatrix[0][0][1] = robotRight
+    rulesMatrix[0][0][1] = robotLeft
     rulesMatrix[0][0][2] = robotLeftFront
     
     rulesMatrix[0][1][0] = robotLeft
@@ -309,7 +309,7 @@ def main():
         force_right = math.cos(out) + math.sin(out)
 
         # Sends the action of robot to simulator
-        sc.act(force_left*0.8, force_right*0.8)
+        sc.act(force_left*0.5, force_right*0.5)
 
     # Disconnects from match simulator (actually this line is never called)
     sc.disconnect()
