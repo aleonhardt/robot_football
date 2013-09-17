@@ -16,6 +16,7 @@ If host or port is omitted 'localhost' and 1024 are assumed as default
 import os
 import sys
 import math
+import numpy
 
 NUMBER_OF_POINTS = 180
 BALL_ANGLE_RULES = 3
@@ -153,12 +154,14 @@ def fuzzyMaximum(firstVector, secondVector): #compõe o conjunto que é o result
 
     return outputVector
 
-def getFiringStrength(firstSet, firstValue, secondSet, secondValue):
+def getFiringStrength(firstSet, firstValue, secondSet, secondValue, thirdSet, thirdValue):
 
     mi0 = firstSet.membership(firstValue)
     mi1 = secondSet.membership(secondValue)
+    mi2 = thirdSet.membership(thirdValue)
 
-    return min(mi0, mi1)
+    min1 = min(mi0, mi1)
+    return min(min1, mi2)
 
 def cutOutputVector(setVector, firingStrength):
 
@@ -191,9 +194,9 @@ def main():
     sc = SoccerClient()
     sc.connect(host, port)
 
-	#conjuntos fuzzy de distância da bola
-	ballClose = fuzzyLeftTrapezoid(100,150)
-	ballFar = fuzzyRightTrapezoid(80, 250)
+    #conjuntos fuzzy de distância da bola
+    ballClose = fuzzyLeftTrapezoid(100,150)
+    ballFar = fuzzyRightTrapezoid(80, 250)
 	
     #conjuntos fuzzy do ângulo em relação à bola
 
@@ -212,23 +215,29 @@ def main():
     robotLeft = fuzzyLeftTrapezoid(-math.pi, 0)
     robotForward = fuzzyLambda(-math.pi, 0, math.pi)
     robotRight = fuzzyRightTrapezoid(0, math.pi)
+    
+    rulesMatrix = numpy.zeros((3,3,2)) # Make a 3 by 3 by 1 array
 
-    #regras(bola x alvo):
-    #F E E
-    #D F E
-    #D D F
+    rulesMatrix[0][0][0] = robotLeft #close
+    rulesMatrix[0][0][1] = robotLeft #far
+    rulesMatrix[0][1][0] = robotLeft  
+    rulesMatrix[0][1][1] = robotLeft 
+    rulesMatrix[0][2][0] = robotLeft
+    rulesMatrix[0][2][1] = robotLeft
+    rulesMatrix[1][0][0] = robotRight
+    rulesMatrix[1][0][1] = robotForward
+    rulesMatrix[1][1][0] = robotForward
+    rulesMatrix[1][1][1] = robotForward
+    rulesMatrix[1][2][0] = robotLeft
+    rulesMatrix[1][2][1] = robotForward
+    rulesMatrix[2][0][0] = robotRight
+    rulesMatrix[2][0][1] = robotRight
+    rulesMatrix[2][1][0] = robotRight
+    rulesMatrix[2][1][1] = robotRight
+    rulesMatrix[2][2][0] = robotRight
+    rulesMatrix[2][2][1] = robotRight
 
-    rulesMatrix = [[0 for i in range(3)] for i in range(3)] #cria matriz de regras
-    rulesMatrix[0][0] = robotLeft
-    rulesMatrix[0][1] = robotLeft  
-    rulesMatrix[0][2] = robotLeft
-    rulesMatrix[1][0] = robotRight
-    rulesMatrix[1][1] = robotForward
-    rulesMatrix[1][2] = robotLeft
-    rulesMatrix[2][0] = robotRight
-    rulesMatrix[2][1] = robotRight
-    rulesMatrix[2][2] = robotRight
-
+    distanceFuzzySets =[ballClose, ballFar]
     ballFuzzySets = [ballLeft, ballForward, ballRight]
     targetFuzzySets = [targetLeft, targetForward, targetRight]
     robotFuzzySets = [robotLeft, robotForward, robotRight]
@@ -241,20 +250,27 @@ def main():
         # Gets the angle between goal and robot
         target_angle = sc.get_target_angle()
 
+	#gets the distance to the ball
+        ball_distance = sc.get_ball_distance()
+
         inferedVector = [0]*180
 
         #laço para determinar a força de disparo de cada regra e calcular o conjunto de inferencia fuzzy
 
         for i in range(len(ballFuzzySets)): 
             for j in range(len(targetFuzzySets)):
-                mi0 = ballFuzzySets[i].membership(ball_angle)
-                print(mi0)
-                if mi0 > 0:
-                    mi1 = targetFuzzySets[j].membership(target_angle)
-                    print(mi1)
-                    if mi1 > 0:
-                        firingStrength = getFiringStrength(ballFuzzySets[i], ball_angle, targetFuzzySets[j], target_angle)
-                        inferedVector = fuzzyMaximum(inferedVector, cutOutputVector(rulesMatrix[i][j].set, firingStrength))
+                for k in range(len(distanceFuzzySets)):
+                    mi0 = ballFuzzySets[i].membership(ball_angle)
+                    print(mi0)
+                    if mi0 > 0:
+                        mi1 = targetFuzzySets[j].membership(target_angle)
+                        print(mi1)
+                        if mi1 > 0:
+                            mi2=distanceFuzzySets[k].membership(ball_distance)
+                            print(mi2)
+                            if mi2 > 0:
+                                firingStrength = getFiringStrength(ballFuzzySets[i], ball_angle, targetFuzzySets[j], target_angle, distanceFuzzySets[k], ball_distance)
+                                inferedVector = fuzzyMaximum(inferedVector, cutOutputVector(rulesMatrix[i][j][k].set, firingStrength))
 
         out = defuzzification(inferedVector)
 
