@@ -200,9 +200,11 @@ def main():
 	
     #conjuntos fuzzy do ângulo em relação à bola
 
-    ballLeft = fuzzyLeftTrapezoid(-math.pi, 0)
+    ballLeftBack = fuzzyLeftTrapezoid(-math.pi, -math.pi/2)
+    ballLeftFront = fuzzyLambda(-math.pi/4, -math.pi/2, 0)
     ballForward = fuzzyLambda(-math.pi/2, 0, math.pi/2)
-    ballRight = fuzzyRightTrapezoid(0, math.pi)
+    ballRightFront = fuzzyLambda(0, math.pi/2, math.pi/4)
+    ballRightBack = fuzzyRightTrapezoid(math.pi/2, math.pi)
 
     #conjuntos fuzzy do ângulo em relação ao gol
 
@@ -212,35 +214,62 @@ def main():
 
     #conjuntos fuzzy do ângulo do robô(saída)
 
-    robotLeft = fuzzyLeftTrapezoid(-math.pi, 0)
-    robotForward = fuzzyLambda(-math.pi, 0, math.pi)
-    robotRight = fuzzyRightTrapezoid(0, math.pi)
+    robotLeft= fuzzyLambda(- math.pi, -math.pi/4, -math.pi/2)
+    robotLeftFront = fuzzyLambda(-math.pi/4, -math.pi/2, 0)
+    robotForward = fuzzyLambda(-math.pi/2, 0, math.pi/2)
+    robotRightFront = fuzzyLambda(0, math.pi/2, math.pi/4)
+    robotRight = fuzzyLambda(math.pi/2, math.pi/4, math.pi)
     
-    rulesMatrix = numpy.zeros((3,3,2), dtype=object) # Make a 3 by 3 by 1 array
+    rulesMatrix = numpy.zeros((2,5,3), dtype=object) # Make a 2 by 5 by 3 rules matrix
+    #[distância, angulo bola, angulo gol]
+    #close
+    rulesMatrix[0][0][0] = robotLeft
+    rulesMatrix[0][0][1] = robotRight
+    rulesMatrix[0][0][2] = robotLeftFront
+    
+    rulesMatrix[0][1][0] = robotLeft
+    rulesMatrix[0][1][1] = robotLeft
+    rulesMatrix[0][1][2] = robotLeftFront
+    
+    rulesMatrix[0][2][0] = robotRightFront
+    rulesMatrix[0][2][1] = robotForward
+    rulesMatrix[0][2][2] = robotLeftFront
+    
+    rulesMatrix[0][3][0] = robotRightFront
+    rulesMatrix[0][3][1] = robotRightFront
+    rulesMatrix[0][3][2] = robotRight
+    
+    rulesMatrix[0][4][0] = robotRightFront
+    rulesMatrix[0][4][1] = robotRight
+    rulesMatrix[0][4][2] = robotRight
 
-    rulesMatrix[0][0][0] = robotLeft #close
-    rulesMatrix[0][0][1] = robotLeft #far
-    rulesMatrix[0][1][0] = robotLeft  
-    rulesMatrix[0][1][1] = robotLeft 
-    rulesMatrix[0][2][0] = robotLeft
-    rulesMatrix[0][2][1] = robotLeft
-    rulesMatrix[1][0][0] = robotRight
-    rulesMatrix[1][0][1] = robotForward
-    rulesMatrix[1][1][0] = robotForward
-    rulesMatrix[1][1][1] = robotForward
-    rulesMatrix[1][2][0] = robotLeft
+    #far
+    rulesMatrix[1][0][0] = robotLeft
+    rulesMatrix[1][0][1] = robotLeft
+    rulesMatrix[1][0][2] = robotLeft
+    
+    rulesMatrix[1][1][0] = robotLeftFront
+    rulesMatrix[1][1][1] = robotLeftFront
+    rulesMatrix[1][1][2] = robotLeftFront
+    
+    rulesMatrix[1][2][0] = robotForward
     rulesMatrix[1][2][1] = robotForward
-    rulesMatrix[2][0][0] = robotRight
-    rulesMatrix[2][0][1] = robotRight
-    rulesMatrix[2][1][0] = robotRight
-    rulesMatrix[2][1][1] = robotRight
-    rulesMatrix[2][2][0] = robotRight
-    rulesMatrix[2][2][1] = robotRight
+    rulesMatrix[1][2][2] = robotForward
+    
+    rulesMatrix[1][3][0] = robotRightFront
+    rulesMatrix[1][3][1] = robotRightFront
+    rulesMatrix[1][3][2] = robotRightFront
+    
+    rulesMatrix[1][4][0] = robotRight
+    rulesMatrix[1][4][1] = robotRight
+    rulesMatrix[1][4][2] = robotRight
+    
+    
 
     distanceFuzzySets =[ballClose, ballFar]
-    ballFuzzySets = [ballLeft, ballForward, ballRight]
+    ballFuzzySets = [ballLeftBack, ballLeftFront, ballForward, ballRightFront, ballRightBack]
     targetFuzzySets = [targetLeft, targetForward, targetRight]
-    robotFuzzySets = [robotLeft, robotForward, robotRight]
+    robotFuzzySets = [robotLeft, robotLeftFront, robotForward, robotRightFront, robotRight]
 
     # Action loop
     while True:
@@ -257,19 +286,19 @@ def main():
 
         #laço para determinar a força de disparo de cada regra e calcular o conjunto de inferencia fuzzy
 
-        for i in range(len(ballFuzzySets)): 
-            for j in range(len(targetFuzzySets)):
-                for k in range(len(distanceFuzzySets)):
-                    mi0 = ballFuzzySets[i].membership(ball_angle)
+        for i in range(len(distanceFuzzySets)): 
+            for j in range(len(ballFuzzySets)):
+                for k in range(len(targetFuzzySets)):
+                    mi0 = distanceFuzzySets[i].membership(ball_distance)
                     print(mi0)
                     if mi0 > 0:
-                        mi1 = targetFuzzySets[j].membership(target_angle)
+                        mi1 = ballFuzzySets[j].membership(ball_angle)
                         print(mi1)
                         if mi1 > 0:
-                            mi2=distanceFuzzySets[k].membership(ball_distance)
+                            mi2=targetFuzzySets[k].membership(target_angle)
                             print(mi2)
                             if mi2 > 0:
-                                firingStrength = getFiringStrength(ballFuzzySets[i], ball_angle, targetFuzzySets[j], target_angle, distanceFuzzySets[k], ball_distance)
+                                firingStrength = getFiringStrength(distanceFuzzySets[i], ball_distance, ballFuzzySets[j], ball_angle, targetFuzzySets[k], target_angle)
                                 inferedVector = fuzzyMaximum(inferedVector, cutOutputVector(rulesMatrix[i][j][k].set, firingStrength))
 
         out = defuzzification(inferedVector)
@@ -280,7 +309,7 @@ def main():
         force_right = math.cos(out) + math.sin(out)
 
         # Sends the action of robot to simulator
-        sc.act(force_left*0.5, force_right*0.5)
+        sc.act(force_left*0.8, force_right*0.8)
 
     # Disconnects from match simulator (actually this line is never called)
     sc.disconnect()
