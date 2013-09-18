@@ -195,8 +195,9 @@ def main():
     sc.connect(host, port)
 
     #conjuntos fuzzy de distância da bola
-    ballClose = fuzzyLeftTrapezoid(70,100)
-    ballFar = fuzzyRightTrapezoid(50, 250)
+    ballVeryClose = fuzzyLeftTrapezoid(20,50)
+    ballClose = fuzzyTrapezoid(40,100,150,250)
+    ballFar = fuzzyRightTrapezoid(200, 300)
 	
     #conjuntos fuzzy do ângulo em relação à bola
 
@@ -220,53 +221,74 @@ def main():
     robotRightFront = fuzzyLambda(0, math.pi/2, math.pi/4)
     robotRight = fuzzyLambda(math.pi/2, math.pi/4, math.pi)
     
-    rulesMatrix = numpy.zeros((2,5,3), dtype=object) # Make a 2 by 5 by 3 rules matrix
+    rulesMatrix = numpy.zeros((3,5,3), dtype=object) # Make a 3 by 5 by 3 rules matrix
     #[distância, angulo bola, angulo gol]
-    #close
-    rulesMatrix[0][0][0] = robotLeft
-    rulesMatrix[0][0][1] = robotLeft
+    #very close
+    rulesMatrix[0][0][0] = robotLeftFront
+    rulesMatrix[0][0][1] = robotRight
     rulesMatrix[0][0][2] = robotLeftFront
     
-    rulesMatrix[0][1][0] = robotLeft
-    rulesMatrix[0][1][1] = robotLeft
+    rulesMatrix[0][1][0] = robotForward
+    rulesMatrix[0][1][1] = robotLeftFront
     rulesMatrix[0][1][2] = robotLeftFront
     
-    rulesMatrix[0][2][0] = robotRightFront
+    rulesMatrix[0][2][0] = robotForward
     rulesMatrix[0][2][1] = robotForward
-    rulesMatrix[0][2][2] = robotLeftFront
+    rulesMatrix[0][2][2] = robotForward
     
     rulesMatrix[0][3][0] = robotRightFront
     rulesMatrix[0][3][1] = robotRightFront
-    rulesMatrix[0][3][2] = robotRight
+    rulesMatrix[0][3][2] = robotForward
     
     rulesMatrix[0][4][0] = robotRightFront
-    rulesMatrix[0][4][1] = robotRight
-    rulesMatrix[0][4][2] = robotRight
-
-    #far
-    rulesMatrix[1][0][0] = robotLeft
-    rulesMatrix[1][0][1] = robotLeft
-    rulesMatrix[1][0][2] = robotLeft
+    rulesMatrix[0][4][1] = robotLeft
+    rulesMatrix[0][4][2] = robotRightFront
     
-    rulesMatrix[1][1][0] = robotLeftFront
-    rulesMatrix[1][1][1] = robotLeftFront
+    #close
+    rulesMatrix[1][0][0] = robotLeft
+    rulesMatrix[1][0][1] = robotRightFront
+    rulesMatrix[1][0][2] = robotLeftFront
+    
+    rulesMatrix[1][1][0] = robotLeft
+    rulesMatrix[1][1][1] = robotRightFront
     rulesMatrix[1][1][2] = robotLeftFront
     
-    rulesMatrix[1][2][0] = robotForward
+    rulesMatrix[1][2][0] = robotLeft
     rulesMatrix[1][2][1] = robotForward
-    rulesMatrix[1][2][2] = robotForward
+    rulesMatrix[1][2][2] = robotRight
     
     rulesMatrix[1][3][0] = robotRightFront
-    rulesMatrix[1][3][1] = robotRightFront
-    rulesMatrix[1][3][2] = robotRightFront
+    rulesMatrix[1][3][1] = robotLeftFront
+    rulesMatrix[1][3][2] = robotRight
     
-    rulesMatrix[1][4][0] = robotRight
-    rulesMatrix[1][4][1] = robotRight
+    rulesMatrix[1][4][0] = robotRightFront
+    rulesMatrix[1][4][1] = robotLeftFront
     rulesMatrix[1][4][2] = robotRight
+
+    #far
+    rulesMatrix[2][0][0] = robotLeft
+    rulesMatrix[2][0][1] = robotLeft
+    rulesMatrix[2][0][2] = robotLeft
+    
+    rulesMatrix[2][1][0] = robotLeftFront
+    rulesMatrix[2][1][1] = robotLeftFront
+    rulesMatrix[2][1][2] = robotLeftFront
+    
+    rulesMatrix[2][2][0] = robotForward
+    rulesMatrix[2][2][1] = robotForward
+    rulesMatrix[2][2][2] = robotForward
+    
+    rulesMatrix[2][3][0] = robotRightFront
+    rulesMatrix[2][3][1] = robotRightFront
+    rulesMatrix[2][3][2] = robotRightFront
+    
+    rulesMatrix[2][4][0] = robotRight
+    rulesMatrix[2][4][1] = robotRight
+    rulesMatrix[2][4][2] = robotRight
     
     
 
-    distanceFuzzySets =[ballClose, ballFar]
+    distanceFuzzySets =[ballVeryClose, ballClose, ballFar]
     ballFuzzySets = [ballLeftBack, ballLeftFront, ballForward, ballRightFront, ballRightBack]
     targetFuzzySets = [targetLeft, targetForward, targetRight]
     robotFuzzySets = [robotLeft, robotLeftFront, robotForward, robotRightFront, robotRight]
