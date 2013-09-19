@@ -37,7 +37,7 @@ class fuzzySet:
 
 class fuzzyLambda(fuzzySet): #lambda(triangulo) herda da superclasse fuzzySet(conjunto fuzzy)
 
-    def __init__(self, alpha, beta, gamma):
+    def __init__(self, alpha, beta, gamma, lowerLimit, upperLimit):
         self.alpha = alpha
         self.beta = beta
         self.gamma = gamma
@@ -45,8 +45,9 @@ class fuzzyLambda(fuzzySet): #lambda(triangulo) herda da superclasse fuzzySet(co
         #inicializa vetor de pontos da função
 
         self.set = []
+        setLength = upperLimit - lowerLimit
         for index in range(NUMBER_OF_POINTS):
-            x = index*(math.pi/(NUMBER_OF_POINTS/2)) - math.pi
+            x = index*(setLength/NUMBER_OF_POINTS) + lowerLimit
             if x < self.alpha or x >= self.gamma: 
                 self.set.append(0);
             if x >= self.alpha and x < self.beta: 
@@ -64,15 +65,16 @@ class fuzzyLambda(fuzzySet): #lambda(triangulo) herda da superclasse fuzzySet(co
 
 class fuzzyLeftTrapezoid(fuzzySet):
 
-    def __init__(self, alpha, beta):
+    def __init__(self, alpha, beta, lowerLimit, upperLimit):
         self.alpha = alpha;
         self.beta = beta;
 
         #inicializa vetor de pontos da função
 
         self.set = []
+        setLength = upperLimit - lowerLimit
         for index in range(NUMBER_OF_POINTS):
-            x = index*(math.pi/(NUMBER_OF_POINTS/2)) - math.pi
+            x = index*(setLength/NUMBER_OF_POINTS) + lowerLimit
             if x < self.alpha: 
                 self.set.append(1.0) 
             elif x >= self.alpha and x < self.beta: 
@@ -90,15 +92,16 @@ class fuzzyLeftTrapezoid(fuzzySet):
 
 class fuzzyRightTrapezoid(fuzzySet):
 
-    def __init__(self, alpha, beta):
+    def __init__(self, alpha, beta, lowerLimit, upperLimit):
         self.alpha = alpha;
         self.beta = beta;
 
         #inicializa vetor de pontos da função
 
         self.set = []
+        setLength = upperLimit - lowerLimit
         for index in range(NUMBER_OF_POINTS):
-            x = index*(math.pi/(NUMBER_OF_POINTS/2)) - math.pi
+            x = index*(setLength/NUMBER_OF_POINTS) + lowerLimit
             if x < self.alpha: 
                 self.set.append(0) 
             if x >= self.alpha and x < self.beta: 
@@ -116,15 +119,16 @@ class fuzzyRightTrapezoid(fuzzySet):
 
 class fuzzyTrapezoid(fuzzySet):
 
-    def __init__(self, alpha, beta, gamma, delta):
+    def __init__(self, alpha, beta, gamma, delta, lowerLimit, upperLimit):
         self.alpha = alpha;
         self.beta = beta;       
         self.gamma = gamma;
         self.delta = delta;
 
         self.set = []
+        setLength = upperLimit - lowerLimit
         for index in range(NUMBER_OF_POINTS):
-            x = index*(math.pi/(NUMBER_OF_POINTS/2)) - math.pi
+            x = index*(setLength/NUMBER_OF_POINTS) + lowerLimit
             if x < self.alpha or x >= self.delta: 
                 self.set.append(0) 
             if x >= self.alpha and x < self.beta: 
@@ -195,33 +199,33 @@ def main():
     sc.connect(host, port)
 
     #conjuntos fuzzy de distância da bola
-    ballVeryClose = fuzzyLeftTrapezoid(25,75)
-    ballClose = fuzzyTrapezoid(25,75,300,400)
-    ballFar = fuzzyRightTrapezoid(300, 400)
+    ballVeryClose = fuzzyLeftTrapezoid(25,75,0,400)
+    ballClose = fuzzyTrapezoid(25,75,300,400,0,400)
+    ballFar = fuzzyRightTrapezoid(300, 400,0,400)
 	
     #conjuntos fuzzy do ângulo em relação à bola
 
-    ballLeftBack = fuzzyLeftTrapezoid(-math.pi, -math.pi/2)
-    ballLeftFront = fuzzyLambda(-math.pi, -math.pi/2, 0)
-    ballForward = fuzzyLambda(-math.pi/2, 0, math.pi/2)
-    ballRightFront = fuzzyLambda(0, math.pi/2, math.pi)
-    ballRightBack = fuzzyRightTrapezoid(math.pi/2, math.pi)
+    ballLeftBack = fuzzyLeftTrapezoid(-math.pi, -math.pi/2, -math.pi, math.pi)
+    ballLeftFront = fuzzyLambda(-math.pi, -math.pi/2, 0, -math.pi, math.pi)
+    ballForward = fuzzyLambda(-math.pi/2, 0, math.pi/2, -math.pi, math.pi)
+    ballRightFront = fuzzyLambda(0, math.pi/2, math.pi, -math.pi, math.pi)
+    ballRightBack = fuzzyRightTrapezoid(math.pi/2, math.pi, -math.pi, math.pi)
 
     #conjuntos fuzzy do ângulo em relação ao gol
 
-    targetLeftBack = fuzzyLeftTrapezoid(-math.pi, -math.pi/2)
-    targetLeftFront = fuzzyLambda(-math.pi, -math.pi/2, 0)
-    targetForward = fuzzyLambda(-math.pi/2, 0, math.pi/2)
-    targetRightFront = fuzzyLambda(0, math.pi/2, math.pi)
-    targetRightBack = fuzzyRightTrapezoid(math.pi/2, math.pi)
+    targetLeftBack = fuzzyLeftTrapezoid(-math.pi, -math.pi/2, -math.pi, math.pi)
+    targetLeftFront = fuzzyLambda(-math.pi, -math.pi/2, 0, -math.pi, math.pi)
+    targetForward = fuzzyLambda(-math.pi/2, 0, math.pi/2, -math.pi, math.pi)
+    targetRightFront = fuzzyLambda(0, math.pi/2, math.pi, -math.pi, math.pi)
+    targetRightBack = fuzzyRightTrapezoid(math.pi/2, math.pi, -math.pi, math.pi)
 
     #conjuntos fuzzy do ângulo do robô(saída)
 
-    robotLeftBack = fuzzyLeftTrapezoid(-math.pi, -math.pi/2)
-    robotLeftFront = fuzzyLambda(-math.pi, -math.pi/2, 0)
-    robotForward = fuzzyLambda(-math.pi/2, 0, math.pi/2)
-    robotRightFront = fuzzyLambda(0, math.pi/2, math.pi)
-    robotRightBack = fuzzyRightTrapezoid(math.pi/2, math.pi)
+    robotLeftBack = fuzzyLeftTrapezoid(-math.pi, -math.pi/2, -math.pi, math.pi)
+    robotLeftFront = fuzzyLambda(-math.pi, -math.pi/2, 0, -math.pi, math.pi)
+    robotForward = fuzzyLambda(-math.pi/2, 0, math.pi/2, -math.pi, math.pi)
+    robotRightFront = fuzzyLambda(0, math.pi/2, math.pi, -math.pi, math.pi)
+    robotRightBack = fuzzyRightTrapezoid(math.pi/2, math.pi, -math.pi, math.pi)
     
     rulesMatrix = numpy.zeros((3,5,5), dtype=object) # Make a 3 by 5 by 3 rules matrix
     #[distância, angulo bola, angulo gol]
@@ -347,13 +351,13 @@ def main():
             for j in range(len(ballFuzzySets)):
                 for k in range(len(targetFuzzySets)):
                     mi0 = distanceFuzzySets[i].membership(ball_distance)
-                    print(mi0)
+                  # print(mi0)
                     if mi0 > 0:
                         mi1 = ballFuzzySets[j].membership(ball_angle)
-                        print(mi1)
+                        #print(mi1)
                         if mi1 > 0:
                             mi2=targetFuzzySets[k].membership(target_angle)
-                            print(mi2)
+                           # print(mi2)
                             if mi2 > 0:
                                 firingStrength = getFiringStrength(distanceFuzzySets[i], ball_distance, ballFuzzySets[j], ball_angle, targetFuzzySets[k], target_angle)
                                 inferedVector = fuzzyMaximum(inferedVector, cutOutputVector(rulesMatrix[i][j][k].set, firingStrength))
