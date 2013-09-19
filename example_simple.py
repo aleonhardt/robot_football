@@ -228,14 +228,14 @@ def main():
 
     rulesMatrix[0][0][0] = robotLeftBack
     rulesMatrix[0][0][1] = robotLeftFront
-    rulesMatrix[0][0][2] = robotRightFront
-    rulesMatrix[0][0][3] = robotRightFront
+    rulesMatrix[0][0][2] = robotLeftFront
+    rulesMatrix[0][0][3] = robotLeftFront
     rulesMatrix[0][0][4] = robotLeftFront
     
     rulesMatrix[0][1][0] = robotLeftBack
     rulesMatrix[0][1][1] = robotLeftFront
-    rulesMatrix[0][1][2] = robotLeftFront
-    rulesMatrix[0][1][3] = robotRightFront
+    rulesMatrix[0][1][2] = robotLeftBack
+    rulesMatrix[0][1][3] = robotLeftBack
     rulesMatrix[0][1][4] = robotLeftBack
 
     rulesMatrix[0][2][0] = robotLeftBack
@@ -244,15 +244,15 @@ def main():
     rulesMatrix[0][2][3] = robotRightFront
     rulesMatrix[0][2][4] = robotRightBack
     
-    rulesMatrix[0][3][0] = robotRightFront
-    rulesMatrix[0][3][1] = robotLeftFront
-    rulesMatrix[0][3][2] = robotRightFront
+    rulesMatrix[0][3][0] = robotRightBack
+    rulesMatrix[0][3][1] = robotRightBack
+    rulesMatrix[0][3][2] = robotRightBack
     rulesMatrix[0][3][3] = robotRightFront
     rulesMatrix[0][3][4] = robotRightBack
     
     rulesMatrix[0][4][0] = robotRightFront
-    rulesMatrix[0][4][1] = robotLeftFront
-    rulesMatrix[0][4][2] = robotLeftFront
+    rulesMatrix[0][4][1] = robotRightFront
+    rulesMatrix[0][4][2] = robotRightFront
     rulesMatrix[0][4][3] = robotRightFront
     rulesMatrix[0][4][4] = robotRightBack
 
