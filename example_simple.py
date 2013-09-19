@@ -194,9 +194,9 @@ def main():
     sc.connect(host, port)
 
     #conjuntos fuzzy de distância da bola
-    ballVeryClose = fuzzyLeftTrapezoid(40,100,0,1500)
-    ballClose = fuzzyTrapezoid(75,150,250,400,0,1500)
-    ballFar = fuzzyRightTrapezoid(300,500,0,1500)
+    ballVeryClose = fuzzyLeftTrapezoid(50,90,0,1500)
+    ballClose = fuzzyTrapezoid(80,150,250,400,0,1500)
+    ballFar = fuzzyRightTrapezoid(370,500,0,1500)
 	
     #conjuntos fuzzy do ângulo em relação à bola
 
