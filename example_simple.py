@@ -216,11 +216,11 @@ def main():
 
     #conjuntos fuzzy do ângulo do robô(saída)
 
-    robotLeftBack = fuzzyLambda(- math.pi, -math.pi/4, -math.pi/2, -math.pi, math.pi)
+    robotLeftBack = fuzzyLambda(- math.pi, -3*math.pi/4, -math.pi/2, -math.pi, math.pi)
     robotLeftFront = fuzzyLambda(-3*math.pi/4, -math.pi/2, 0, -math.pi, math.pi)
     robotForward = fuzzyLambda(-math.pi/2, 0, math.pi/2, -math.pi, math.pi)
     robotRightFront = fuzzyLambda(0, math.pi/2, 3*math.pi/4, -math.pi, math.pi)
-    robotRightBack = fuzzyLambda(math.pi/2, math.pi/4, math.pi, -math.pi, math.pi)
+    robotRightBack = fuzzyLambda(math.pi/2, 3*math.pi/4, math.pi, -math.pi, math.pi)
     
     rulesMatrix = numpy.zeros((3,5,5), dtype=object) # Make a 3 by 5 by 5 rules matrix
     #[distância, angulo bola, angulo gol]
@@ -365,7 +365,7 @@ def main():
         force_right = math.cos(out) + math.sin(out)
 
         # Sends the action of robot to simulator
-        sc.act(force_left*0.5, force_right*0.5)
+        sc.act(force_left*0.45, force_right*0.45)
 
     # Disconnects from match simulator (actually this line is never called)
     sc.disconnect()
