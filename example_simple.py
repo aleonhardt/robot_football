@@ -189,6 +189,8 @@ def main():
 
     host = sys.argv[1] if len(sys.argv) > 1 else 'localhost'    
     port = int(sys.argv[2]) if len(sys.argv) > 2 else 1024
+    trainingDataFile = open('soccer.lrn', 'w')
+
     
     sc = SoccerClient()
     sc.connect(host, port)
@@ -337,7 +339,6 @@ def main():
 
 	#gets the distance to the ball
         ball_distance = sc.get_ball_distance()
-        print("distance: ", ball_distance)
         inferedVector = [0]*NUMBER_OF_POINTS
 
         #laço para determinar a força de disparo de cada regra e calcular o conjunto de inferencia fuzzy
@@ -361,14 +362,30 @@ def main():
 
         # converte ângulo do robô na força dos dois motores
 
+        print("out: %f", out)
+
         force_left = math.cos(out) - math.sin(out)
         force_right = math.cos(out) + math.sin(out)
 
+        if force_left > 1.0:
+            force_left = 1.0;
+        if force_right > 1.0:
+            force_right = 1.0;
+
+        if force_left < -1.0:
+            force_left = -1.0;
+        if force_right < -1.0:
+            force_right = -1.0;
+
+
+        trainingDataFile.write(str(ball_distance)+" "+str(ball_angle)+" "+str(target_angle)+" "+str(force_left)+" "+str(force_right)+"\n")
+
         # Sends the action of robot to simulator
-        sc.act(force_left*0.45, force_right*0.45)
+        sc.act(force_left*0.55, force_right*0.55)
 
     # Disconnects from match simulator (actually this line is never called)
     sc.disconnect()
+    trainingDataFile.close()
 
 if __name__ == '__main__':
     main() 
