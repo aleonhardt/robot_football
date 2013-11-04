@@ -378,7 +378,7 @@ def main():
             force_right = -1.0;
 
 
-        trainingDataFile.write(str(ball_distance)+" "+str(ball_angle)+" "+str(target_angle)+" "+str(force_left)+" "+str(force_right)+"\n")
+        trainingDataFile.write(str(round(ball_distance,5))+" "+str(round(ball_angle,5))+" "+str(round(target_angle,5))+" "+str(round(force_left,5))+" "+str(round(force_right,5))+"\n")
 
         # Sends the action of robot to simulator
         sc.act(force_left*0.55, force_right*0.55)
