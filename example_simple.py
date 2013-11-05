@@ -189,7 +189,10 @@ def main():
 
     host = sys.argv[1] if len(sys.argv) > 1 else 'localhost'    
     port = int(sys.argv[2]) if len(sys.argv) > 2 else 1024
-    trainingDataFile = open('soccer.lrn', 'w')
+    if port == 1024:
+        trainingDataFile = open('soccer_blue.lrn', 'w')
+    elif port == 1025:
+        trainingDataFile = open('soccer_yellow.lrn', 'w')
 
     
     sc = SoccerClient()
