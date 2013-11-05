@@ -3,35 +3,20 @@
 clear;
 close all; clc;
 %arquivo com pontos da função a ser aprendida
-fid=fopen('soccer.lrn', 'r');
-[ball_distancev, ball_anglev, target_anglev, force_leftv, force_rightv] = textread('soccer.lrn', '%f %f %f %f %f');
-[p ii]=size(ball_distancev);
-n=sqrt(p);
-%transforma os vetores de dados (xv, yv, zv) em matrizes (x, y, v)
-for i=1:n
-    for j=1:n
-        ball_distance(i,j)=ball_distancev(n*(i-1)+j);
-        ball_angle(i,j)=ball_anglev(n*(i-1)+j);
-        target_angle(i,j)=target_anglev(n*(i-1)+j);
-        force_left(i,j)=force_leftv(n*(i-1)+j);
-        force_right(i,j)=force_rightv(n*(i-1)+j);
-    end
-end
+fid=fopen('soccer_yellow.lrn', 'r');
+[ball_distancev, ball_anglev, target_anglev, force_leftv, force_rightv] = textread('soccer_yellow.lrn', '%f %f %f %f %f');
+
 
 %prepara entradas e saidas desejadas para a rede
 ent=[ball_distancev ball_anglev target_anglev];
-saidas=[force_left force_right];
+saidas=[force_leftv force_rightv];
 %cria rede mlp
-net= newff([-180 180; -180 180], [5 8 2], {'tansig', 'tansig', 'purelin'},'trainlm');
-net.trainParam.epochs = 500;
+net= newff([0 1000; -180 180; -180 180], [10 7 2], {'logsig', 'tansig', 'purelin'},'trainlm');
+net.trainParam.epochs = 300;
 a = sim(net, ent');
-net=train(net, ent', d');
+net=train(net, ent', saidas');
 out=sim(net, ent');
-%transforma o vetor de saida da rede (out) em matriz (zout)
-for i=1:n
-    for j=1:n
-        zout(i,j)=out(n*(i-1)+j);
-    end
-end
-figure;
-surf(x,y,zout);
+
+weight = net.IW{1};
+
+dlmwrite('ronaldo_weights.nrl',weight);
