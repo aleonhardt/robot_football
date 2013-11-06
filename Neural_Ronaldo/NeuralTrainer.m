@@ -22,6 +22,9 @@ weight = net.IW{1};
 first_layer_weights = net.IW{1};
 second_layer_weights = net.LW{2};
 output_layer_weights = net.LW{6};
+first_layer_weights = first_layer_weights*
+second_layer_weights = second_layer_weights*
+output_layer_weights = output_layer_weights*
 
 dlmwrite('ronaldo_weights.nrl',first_layer_weights,'delimiter',' ');
 file = fopen('ronaldo_weights.nrl','at');
