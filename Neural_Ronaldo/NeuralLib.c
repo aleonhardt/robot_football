@@ -20,10 +20,13 @@
 
 //********************************** Variaveis globais *******************************************
 static int iNumeroEntradas = 0;
-static int iNumeroOcultos = 0;
+static int iNumeroOcultosPrim = 0;
+static int iNumeroOcultosSeg = 0;
 static int iNumeroSaidas = 0;
-static double **ppdPesoOculto = NULL;
-static double *pdCampoOculto = NULL;
+static double **ppdPesoOcultoPrim = NULL;
+static double **ppdPesoOcultoSeg = NULL;
+static double *pdCampoOcultoPrim = NULL;
+static double *pdCampoOcultoSeg = NULL;
 static double **ppdPesoSaida = NULL;
 
 
@@ -44,50 +47,78 @@ int InicializarAnn(const char *szArqPesos)
   szPalavra = strtok(vcLinha, " ");
   iNumeroEntradas = atoi(szPalavra);
   szPalavra = strtok('\0', " ");
-  iNumeroOcultos = atoi(szPalavra);
+  iNumeroOcultosPrim = atoi(szPalavra);
+  szPalavra = strtok('\0', " ");
+  iNumeroOcultosSeg = atoi(szPalavra);
   szPalavra = strtok('\0', " ");
   iNumeroSaidas = atoi(szPalavra);
-  if (!iNumeroEntradas || !iNumeroOcultos || !iNumeroSaidas)
+  if (!iNumeroEntradas || !iNumeroOcultosPrim || !iNumeroOcultosSeg || !iNumeroSaidas)
     return 0;
-  
-  // Aloca memoria para a camada oculta
-  ppdPesoOculto = (double**) malloc(sizeof(double*) * iNumeroOcultos);
-  for (i = 0; i < iNumeroOcultos; i++)
-    ppdPesoOculto[i] = (double*) malloc(sizeof(double) * (iNumeroEntradas + 1));
-  pdCampoOculto = (double*) malloc(sizeof(double) * iNumeroOcultos);
+
+
+  // Aloca memoria para a primeira camada oculta
+  ppdPesoOcultoPrim = (double**) malloc(sizeof(double*) * iNumeroOcultosPrim);
+  for (i = 0; i < iNumeroOcultosPrim; i++)
+    ppdPesoOcultoPrim[i] = (double*) malloc(sizeof(double) * (iNumeroEntradas + 1));
+  pdCampoOcultoPrim = (double*) malloc(sizeof(double) * iNumeroOcultosPrim);
+
+    // Aloca memoria para a segunda camada oculta
+  ppdPesoOcultoSeg = (double**) malloc(sizeof(double*) * iNumeroOcultosSeg);
+  for (i = 0; i < iNumeroOcultosSeg; i++)
+    ppdPesoOcultoSeg[i] = (double*) malloc(sizeof(double) * (iNumeroOcultosPrim + 1));
+  pdCampoOcultoSeg = (double*) malloc(sizeof(double) * iNumeroOcultosSeg);
 
   // Aloca memoria para a camada de saida
   ppdPesoSaida = (double**) malloc(sizeof(double*) * iNumeroSaidas);
   for (i = 0; i < iNumeroSaidas; i++)
-    ppdPesoSaida[i] = (double*) malloc(sizeof(double) * (iNumeroOcultos + 1));
+    ppdPesoSaida[i] = (double*) malloc(sizeof(double) * (iNumeroOcultosSeg + 1));
 
-  // Carrega os pesos da camada oculta
-  for (i = 0; i < iNumeroOcultos && !feof(fp); i++) {
+  // Carrega os pesos da primeira camada oculta
+  for (i = 0; i < iNumeroOcultosPrim && !feof(fp); i++) {
     fgets(vcLinha, MAX_LINHA, fp);
     szPalavra = strtok(vcLinha, " ");
     for (j = 0; j <= iNumeroEntradas && szPalavra; j++) {
-      ppdPesoOculto[i][j] = atof(szPalavra);
+      ppdPesoOcultoPrim[i][j] = atof(szPalavra);
       szPalavra = strtok('\0', " ");
     }
     if (j <= iNumeroEntradas) {
       fclose(fp);
       return 0;
-    } 
+    }
   }
-  if (i < iNumeroOcultos) {
+  if (i < iNumeroOcultosPrim) {
     fclose(fp);
     return 0;
-  } 
+  }
+
+
+  // Carrega os pesos da segunda camada oculta
+  for (i = 0; i < iNumeroOcultosSeg&& !feof(fp); i++) {
+    fgets(vcLinha, MAX_LINHA, fp);
+    szPalavra = strtok(vcLinha, " ");
+    for (j = 0; j <= iNumeroOcultosPrim && szPalavra; j++) {
+      ppdPesoOcultoSeg[i][j] = atof(szPalavra);
+      szPalavra = strtok('\0', " ");
+    }
+    if (j <= iNumeroOcultosPrim ) {
+      fclose(fp);
+      return 0;
+    }
+  }
+  if (i < iNumeroOcultosSeg) {
+    fclose(fp);
+    return 0;
+  }
 
   // Carrega os pesos da camada de saida
   for (i = 0; i < iNumeroSaidas && !feof(fp); i++) {
     fgets(vcLinha, MAX_LINHA, fp);
     szPalavra = strtok(vcLinha, " ");
-    for (j = 0; j <= iNumeroOcultos && szPalavra; j++) {
+    for (j = 0; j <= iNumeroOcultosSeg && szPalavra; j++) {
       ppdPesoSaida[i][j] = atof(szPalavra);
       szPalavra = strtok('\0', " ");
     }
-    if (j <= iNumeroOcultos) {
+    if (j <= iNumeroOcultosSeg) {
       fclose(fp);
       return 0;
     }
@@ -101,19 +132,27 @@ void AtivarAnn(const double *pdEntrada, double *pdSaidaObtida)
 {
   register int i, j;
 
-  // Ativa a camada oculta
-  for (i = 0; i < iNumeroOcultos; i++) {
-    pdCampoOculto[i] = ppdPesoOculto[i][iNumeroEntradas];
+  // Ativa a primeira camada oculta
+  for (i = 0; i < iNumeroOcultosPrim; i++) {
+    pdCampoOcultoPrim[i] = ppdPesoOcultoPrim[i][iNumeroEntradas];
     for (j = 0; j < iNumeroEntradas; j++)
-      pdCampoOculto[i] += pdEntrada[j] * ppdPesoOculto[i][j];
-    pdCampoOculto[i] = tanh(pdCampoOculto[i]);
+      pdCampoOcultoPrim[i] += pdEntrada[j] * ppdPesoOcultoPrim[i][j];
+    pdCampoOcultoPrim[i] = 1 / (1 + exp(-pdCampoOcultoPrim[i])); //logsig
+  }
+
+   // Ativa a segunda camada oculta
+  for (i = 0; i < iNumeroOcultosSeg; i++) {
+    pdCampoOcultoSeg[i] = ppdPesoOcultoSeg[i][iNumeroOcultosPrim];
+    for (j = 0; j < iNumeroOcultosPrim; j++)
+      pdCampoOcultoSeg[i] += pdCampoOcultoPrim[j] * ppdPesoOcultoSeg[i][j];
+    pdCampoOcultoSeg[i] = tanh(-pdCampoOcultoSeg[i]); //tansig
   }
 
   // Ativa as saidas lineares
   for (i = 0; i < iNumeroSaidas; i++) {
-    pdSaidaObtida[i] = ppdPesoSaida[i][iNumeroOcultos];
-    for (j = 0; j < iNumeroOcultos; j++)
-      pdSaidaObtida[i] += pdCampoOculto[j] * ppdPesoSaida[i][j];
+    pdSaidaObtida[i] = ppdPesoSaida[i][iNumeroOcultosSeg];
+    for (j = 0; j < iNumeroOcultosSeg; j++)
+      pdSaidaObtida[i] += pdCampoOcultoSeg[j] * ppdPesoSaida[i][j];
   }
 }
 
@@ -122,20 +161,35 @@ void FinalizarAnn()
 {
   int i;
 
-  // Desaloca a memoria da camada oculta
-  if (pdCampoOculto != NULL) {
-    free(pdCampoOculto);
-    pdCampoOculto = NULL;
+  // Desaloca a memoria das camadas ocultas
+  if (pdCampoOcultoPrim != NULL) {
+    free(pdCampoOcultoPrim);
+    pdCampoOcultoPrim = NULL;
   }
-  if (ppdPesoOculto != NULL) {
-    for (i = 0; i < iNumeroOcultos; i++) {
-      if (ppdPesoOculto[i] != NULL) {
-        free(ppdPesoOculto[i]);
-        ppdPesoOculto[i] = NULL;
+  if (pdCampoOcultoSeg != NULL) {
+    free(pdCampoOcultoSeg);
+    pdCampoOcultoSeg = NULL;
+  }
+  if (ppdPesoOcultoPrim != NULL) {
+    for (i = 0; i < iNumeroOcultosPrim; i++) {
+      if (ppdPesoOcultoPrim[i] != NULL) {
+        free(ppdPesoOcultoPrim[i]);
+        ppdPesoOcultoPrim[i] = NULL;
       }
     }
-    free(ppdPesoOculto);
-    ppdPesoOculto = NULL;
+    free(ppdPesoOcultoPrim);
+    ppdPesoOcultoPrim = NULL;
+  }
+
+  if (ppdPesoOcultoSeg != NULL) {
+    for (i = 0; i < iNumeroOcultosSeg; i++) {
+      if (ppdPesoOcultoSeg[i] != NULL) {
+        free(ppdPesoOcultoSeg[i]);
+        ppdPesoOcultoSeg[i] = NULL;
+      }
+    }
+    free(ppdPesoOcultoSeg);
+    ppdPesoOcultoSeg= NULL;
   }
 
   // Desaloca a memoria da camada de saida
