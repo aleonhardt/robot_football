@@ -11,7 +11,7 @@ fid=fopen('soccer_yellow.lrn', 'r');
 ent=[ball_distancev ball_anglev target_anglev];
 saidas=[force_leftv force_rightv];
 %cria rede mlp
-net= newff([0 1000; -180 180; -180 180], [10 10 2], {'logsig', 'tansig', 'purelin'},'trainlm');
+net= newff([0 1000; -pi pi; -pi pi], [10 10 2], {'logsig', 'tansig', 'purelin'},'trainlm');
 net.trainParam.epochs = 400;
 a = sim(net, ent');
 net=train(net, ent', saidas');
@@ -19,4 +19,17 @@ out=sim(net, ent');
 
 weight = net.IW{1};
 
-dlmwrite('ronaldo_weights.nrl',weight);
+first_layer_weights = net.IW{1};
+second_layer_weights = net.LW{2};
+output_layer_weights = net.LW{6};
+
+dlmwrite('ronaldo_weights.nrl',first_layer_weights,'delimiter',' ');
+file = fopen('ronaldo_weights.nrl','at');
+fprintf(file, '***\n');
+fclose(file)
+dlmwrite('ronaldo_weights.nrl',second_layer_weights,'delimiter',' ','-append');
+file = fopen('ronaldo_weights.nrl','at');
+fprintf(file, '***\n');
+fclose(file)
+dlmwrite('ronaldo_weights.nrl',output_layer_weights,'delimiter',' ','-append');
+
