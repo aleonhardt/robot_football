@@ -52,7 +52,7 @@ int InicializarAnn(const char *szArqPesos)
   iNumeroOcultosSeg = atoi(szPalavra);
   szPalavra = strtok('\0', " ");
   iNumeroSaidas = atoi(szPalavra);
-  if (!iNumeroEntradas || !iNumeroOcultosPrim || !iNumeroOcultosSeg || !iNumeroSaidas)
+  if (iNumeroEntradas==0 || iNumeroOcultosPrim==0 || iNumeroOcultosSeg==0 || iNumeroSaidas==0)
     return 0;
 
 
@@ -90,7 +90,11 @@ int InicializarAnn(const char *szArqPesos)
     fclose(fp);
     return 0;
   }
-
+    fgets(vcLinha, MAX_LINHA, fp);
+    if(strcmp(vcLinha, "***\n")!=0){
+         fclose(fp);
+    return 0;
+  }
 
   // Carrega os pesos da segunda camada oculta
   for (i = 0; i < iNumeroOcultosSeg&& !feof(fp); i++) {
@@ -110,6 +114,11 @@ int InicializarAnn(const char *szArqPesos)
     return 0;
   }
 
+    fgets(vcLinha, MAX_LINHA, fp);
+    if(strcmp(vcLinha, "***\n")!=0){
+         fclose(fp);
+    return 0;
+  }
   // Carrega os pesos da camada de saida
   for (i = 0; i < iNumeroSaidas && !feof(fp); i++) {
     fgets(vcLinha, MAX_LINHA, fp);
@@ -127,6 +136,38 @@ int InicializarAnn(const char *szArqPesos)
   return (i < iNumeroSaidas ? 0 : 1);
 }
 
+void printNeuralNet()
+{
+    int i, j, k;
+    for(i=0; i<iNumeroOcultosPrim; i++)
+    {
+        printf("[");
+        for (j = 0; j < iNumeroEntradas; j++)
+        {
+           printf("%8.2f ", ppdPesoOcultoPrim[i][j]);
+        }
+        printf("] ");
+    }
+    printf("\n\n\n\n");
+    for (i = 0; i < iNumeroOcultosSeg; i++) {
+            printf("[");
+            for (j = 0; j < iNumeroOcultosPrim; j++)
+            {
+                printf("%8.2f ", ppdPesoOcultoSeg[i][j]);
+            }
+            printf("] ");
+    }
+     printf("\n\n\n\n");
+    for (i = 0; i < iNumeroSaidas; i++) {
+            printf("[");
+            for (j = 0; j < iNumeroOcultosSeg; j++)
+            {
+                printf("%8.2f ", ppdPesoSaida[i][j]);
+            }
+            printf("] ");
+    }
+    printf("\n\n\n\n");
+}
 
 void AtivarAnn(const double *pdEntrada, double *pdSaidaObtida)
 {
