@@ -142,7 +142,7 @@ void printNeuralNet()
     for(i=0; i<iNumeroOcultosPrim; i++)
     {
         printf("[");
-        for (j = 0; j < iNumeroEntradas; j++)
+        for (j = 0; j <= iNumeroEntradas; j++)
         {
            printf("%8.2f ", ppdPesoOcultoPrim[i][j]);
         }
@@ -151,7 +151,7 @@ void printNeuralNet()
     printf("\n\n\n\n");
     for (i = 0; i < iNumeroOcultosSeg; i++) {
             printf("[");
-            for (j = 0; j < iNumeroOcultosPrim; j++)
+            for (j = 0; j <= iNumeroOcultosPrim; j++)
             {
                 printf("%8.2f ", ppdPesoOcultoSeg[i][j]);
             }
@@ -160,7 +160,7 @@ void printNeuralNet()
      printf("\n\n\n\n");
     for (i = 0; i < iNumeroSaidas; i++) {
             printf("[");
-            for (j = 0; j < iNumeroOcultosSeg; j++)
+            for (j = 0; j <= iNumeroOcultosSeg; j++)
             {
                 printf("%8.2f ", ppdPesoSaida[i][j]);
             }
