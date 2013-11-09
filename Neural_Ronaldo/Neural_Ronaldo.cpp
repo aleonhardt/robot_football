@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "NeuralLib.h"
+#include "stlfn.h"
 
 
 //********************************** Variaveis globais *******************************************
@@ -30,10 +30,10 @@ int main(int argc, char* argv[])
     getchar();
     return 0;
   }  
-  
   // Carrega a rede neural, as entradas e as saidas
-  InicializarAnn(argv[3]);
-  pdEntrada = (double*) malloc(sizeof(double) * 8);
+  if(InicializarAnn(argv[3])==0)//erro
+   return 0;
+  pdEntrada = (double*) malloc(sizeof(double) * 3);
   pdSaidaObtida = (double*) malloc(sizeof(double) * 2);
   pdSaidaObtida[0] = pdSaidaObtida[1] = 0.0;
   
@@ -44,18 +44,14 @@ int main(int argc, char* argv[])
     getchar();
     return 0;
   }
-
   // Laço de execução de ações
   for (;;) {
+      
     // Obtem os dados do ambiente
     pdEntrada[0] = environment.getDistance();
     pdEntrada[1] = environment.getBallAngle();
     pdEntrada[2] = environment.getTargetAngle( environment.getOwnGoal() );
-    pdEntrada[3] = environment.getCollision();
-    pdEntrada[4] = environment.getObstacleAngle();
-    pdEntrada[5] = environment.getSpin();
-    pdEntrada[6] = pdSaidaObtida[0]; 
-    pdEntrada[7] = pdSaidaObtida[1];
+   
     // Ativa a rede neural
     AtivarAnn(pdEntrada, pdSaidaObtida);
     // Transmite ação do robô ao ambiente

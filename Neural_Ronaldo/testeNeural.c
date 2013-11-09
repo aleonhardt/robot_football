@@ -8,6 +8,6 @@ int main()
     InicializarAnn("ronaldo_weights.nrl");
 
     printNeuralNet();
-    system("PAUSE");
+    getchar();
 
 }

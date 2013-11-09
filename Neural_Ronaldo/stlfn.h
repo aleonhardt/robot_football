@@ -13,5 +13,6 @@
 int InicializarAnn(const char *szArqPesos);
 void AtivarAnn(const double *pdEntrada, double *pdSaidaObtida);
 void FinalizarAnn();
+void printNeuralNet();
 
 #endif

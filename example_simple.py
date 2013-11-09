@@ -365,26 +365,16 @@ def main():
 
         # converte ângulo do robô na força dos dois motores
 
-        print("out: %f", out)
+        
+        force_left = (math.cos(out) - math.sin(out))*0.55
+        force_right = (math.cos(out) + math.sin(out))*0.55
 
-        force_left = math.cos(out) - math.sin(out)
-        force_right = math.cos(out) + math.sin(out)
-
-        if force_left > 1.0:
-            force_left = 1.0;
-        if force_right > 1.0:
-            force_right = 1.0;
-
-        if force_left < -1.0:
-            force_left = -1.0;
-        if force_right < -1.0:
-            force_right = -1.0;
-
+        
 
         trainingDataFile.write(str(round(ball_distance,5))+" "+str(round(ball_angle,5))+" "+str(round(target_angle,5))+" "+str(round(force_left,5))+" "+str(round(force_right,5))+"\n")
 
         # Sends the action of robot to simulator
-        sc.act(force_left*0.55, force_right*0.55)
+        sc.act(force_left, force_right)
 
     # Disconnects from match simulator (actually this line is never called)
     sc.disconnect()

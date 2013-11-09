@@ -96,6 +96,29 @@ int InicializarAnn(const char *szArqPesos)
   return (i < iNumeroSaidas ? 0 : 1);
 }
 
+void printNeuralNet()
+{
+    int i, j, k;
+    for(i=0; i<iNumeroOcultos; i++)
+    {
+        printf("[");
+        for (j = 0; j <= iNumeroEntradas; j++)
+        {
+           printf("%8.2f ", ppdPesoOculto[i][j]);
+        }
+        printf("] ");
+    }
+    
+    for (i = 0; i < iNumeroSaidas; i++) {
+            printf("[");
+            for (j = 0; j <= iNumeroOcultos; j++)
+            {
+                printf("%8.2f ", ppdPesoSaida[i][j]);
+            }
+            printf("] ");
+    }
+    printf("\n\n\n\n");
+}
 
 void AtivarAnn(const double *pdEntrada, double *pdSaidaObtida)
 {

@@ -40,7 +40,8 @@ int InicializarAnn(const char *szArqPesos)
 
   // Salva os pesos
   if ((fp = fopen(szArqPesos, "r")) == NULL)
-    return 0;
+      return 0;
+    
 
   // Busca o numero de entradas, ocultos e saidas
   fgets(vcLinha, MAX_LINHA, fp);
@@ -91,10 +92,7 @@ int InicializarAnn(const char *szArqPesos)
     return 0;
   }
     fgets(vcLinha, MAX_LINHA, fp);
-    if(strcmp(vcLinha, "***\n")!=0){
-         fclose(fp);
-    return 0;
-  }
+    
 
   // Carrega os pesos da segunda camada oculta
   for (i = 0; i < iNumeroOcultosSeg&& !feof(fp); i++) {
@@ -115,10 +113,7 @@ int InicializarAnn(const char *szArqPesos)
   }
 
     fgets(vcLinha, MAX_LINHA, fp);
-    if(strcmp(vcLinha, "***\n")!=0){
-         fclose(fp);
-    return 0;
-  }
+    
   // Carrega os pesos da camada de saida
   for (i = 0; i < iNumeroSaidas && !feof(fp); i++) {
     fgets(vcLinha, MAX_LINHA, fp);
@@ -133,7 +128,13 @@ int InicializarAnn(const char *szArqPesos)
     }
   }
   fclose(fp);
-  return (i < iNumeroSaidas ? 0 : 1);
+  if(i<iNumeroSaidas)
+  {printf("aqui");
+    return 0; //erro
+    }
+  else
+    return 1;
+  
 }
 
 void printNeuralNet()
