@@ -3,7 +3,7 @@
 clear;
 close all; clc;
 %arquivo com pontos da função a ser aprendida
-fid=fopen('soccer_yellow.lrn', 'r');
+fid=fopen('soccer_blue.lrn', 'r');
 [ball_distancev, ball_anglev, target_anglev, force_leftv, force_rightv] = textread('soccer_yellow.lrn', '%f %f %f %f %f');
 
 
