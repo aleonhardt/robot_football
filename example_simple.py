@@ -206,7 +206,7 @@ def main():
     #conjuntos fuzzy do ângulo em relação à bola
 
     ballLeftBack = fuzzyLeftTrapezoid(-math.pi, -math.pi/2, -math.pi, math.pi)
-    ballLeftFront = fuzzyLambda(-3*math.pi/4, -math.pi/2, -*math.pi/4, -math.pi, math.pi)
+    ballLeftFront = fuzzyLambda(-3*math.pi/4, -math.pi/2, -math.pi/4, -math.pi, math.pi)
     ballForwardLeft= fuzzyLambda(-2*math.pi/6, -math.pi/4, 0, -math.pi, math.pi)
     ballForward = fuzzyLambda(-math.pi/6, 0, math.pi/6, -math.pi, math.pi)
     ballForwardRight = fuzzyLambda(0, math.pi/4, 2*math.pi/6, -math.pi, math.pi)
@@ -231,44 +231,44 @@ def main():
     
     rulesMatrix = numpy.zeros((BALL_DISTANCE_RULES,BALL_ANGLE_RULES,TARGET_ANGLE_RULES), dtype=object) # Make a 3 by 5 by 5 rules matrix
     #[distância, angulo bola, angulo gol]
-    #very close
-#####TODO regras
+    #very close (tá semi zoado)
+
     rulesMatrix[0][0][0] = robotLeftBack
     rulesMatrix[0][0][1] = robotLeftFront
     rulesMatrix[0][0][2] = robotLeftFront
     rulesMatrix[0][0][3] = robotLeftFront
     rulesMatrix[0][0][4] = robotLeftFront
     
-    rulesMatrix[0][1][0] = robotLeftBack
+    rulesMatrix[0][1][0] = robotForward
     rulesMatrix[0][1][1] = robotLeftFront
     rulesMatrix[0][1][2] = robotLeftBack
     rulesMatrix[0][1][3] = robotLeftBack
     rulesMatrix[0][1][4] = robotLeftBack
 
-    rulesMatrix[0][2][0] = robotLeftBack
+    rulesMatrix[0][2][0] = robotForward
     rulesMatrix[0][2][1] = robotLeftFront
-    rulesMatrix[0][2][2] = robotForward
-    rulesMatrix[0][2][3] = robotRightFront
-    rulesMatrix[0][2][4] = robotRightBack
+    rulesMatrix[0][2][2] = robotLeftBack
+    rulesMatrix[0][2][3] = robotLeftBack
+    rulesMatrix[0][2][4] = robotLeftBack
     
-    rulesMatrix[0][3][0] = robotRightBack
-    rulesMatrix[0][3][1] = robotRightBack
-    rulesMatrix[0][3][2] = robotRightBack
+    rulesMatrix[0][3][0] = robotLeftBack
+    rulesMatrix[0][3][1] = robotLeftFront
+    rulesMatrix[0][3][2] = robotForward
     rulesMatrix[0][3][3] = robotRightFront
     rulesMatrix[0][3][4] = robotRightBack
     
-    rulesMatrix[0][4][0] = robotRightFront
-    rulesMatrix[0][4][1] = robotRightFront
-    rulesMatrix[0][4][2] = robotRightFront
+    rulesMatrix[0][4][0] = robotRightBack
+    rulesMatrix[0][4][1] = robotRightBack
+    rulesMatrix[0][4][2] = robotRightBack
     rulesMatrix[0][4][3] = robotRightFront
-    rulesMatrix[0][4][4] = robotRightBack
+    rulesMatrix[0][4][4] = robotForward
 
 
-    rulesMatrix[0][5][0] = robotRightFront
-    rulesMatrix[0][5][1] = robotRightFront
-    rulesMatrix[0][5][2] = robotRightFront
+    rulesMatrix[0][5][0] = robotRightBack
+    rulesMatrix[0][5][1] = robotRightBack
+    rulesMatrix[0][5][2] = robotRightBack
     rulesMatrix[0][5][3] = robotRightFront
-    rulesMatrix[0][5][4] = robotRightBack
+    rulesMatrix[0][5][4] = robotForward
 
     rulesMatrix[0][6][0] = robotRightFront
     rulesMatrix[0][6][1] = robotRightFront
@@ -276,7 +276,7 @@ def main():
     rulesMatrix[0][6][3] = robotRightFront
     rulesMatrix[0][6][4] = robotRightBack
 
-    #close
+    #close (tá muito zoado)
 
     rulesMatrix[1][0][0] = robotLeftBack
     rulesMatrix[1][0][1] = robotLeftBack
@@ -290,29 +290,29 @@ def main():
     rulesMatrix[1][1][3] = robotLeftBack
     rulesMatrix[1][1][4] = robotLeftBack
 
-    rulesMatrix[1][2][0] = robotRightFront
-    rulesMatrix[1][2][1] = robotRightFront
-    rulesMatrix[1][2][2] = robotForward
-    rulesMatrix[1][2][3] = robotLeftFront
-    rulesMatrix[1][2][4] = robotLeftFront
+    rulesMatrix[1][2][0] = robotForward
+    rulesMatrix[1][2][1] = robotForward
+    rulesMatrix[1][2][2] = robotLeftFront
+    rulesMatrix[1][2][3] = robotLeftBack
+    rulesMatrix[1][2][4] = robotLeftBack
     
-    rulesMatrix[1][3][0] = robotRightBack
-    rulesMatrix[1][3][1] = robotRightBack
-    rulesMatrix[1][3][2] = robotRightBack
-    rulesMatrix[1][3][3] = robotForward
-    rulesMatrix[1][3][4] = robotForward
+    rulesMatrix[1][3][0] = robotRightFront
+    rulesMatrix[1][3][1] = robotRightFront
+    rulesMatrix[1][3][2] = robotForward
+    rulesMatrix[1][3][3] = robotLeftFront
+    rulesMatrix[1][3][4] = robotLeftFront
     
     rulesMatrix[1][4][0] = robotRightBack
     rulesMatrix[1][4][1] = robotRightBack
     rulesMatrix[1][4][2] = robotRightFront
-    rulesMatrix[1][4][3] = robotRightFront
-    rulesMatrix[1][4][4] = robotRightFront
+    rulesMatrix[1][4][3] = robotForward
+    rulesMatrix[1][4][4] = robotForward
 
     rulesMatrix[1][5][0] = robotRightBack
     rulesMatrix[1][5][1] = robotRightBack
-    rulesMatrix[1][5][2] = robotRightFront
-    rulesMatrix[1][5][3] = robotRightFront
-    rulesMatrix[1][5][4] = robotRightFront
+    rulesMatrix[1][5][2] = robotRightBack
+    rulesMatrix[1][5][3] = robotForward
+    rulesMatrix[1][5][4] = robotForward
 
     rulesMatrix[1][6][0] = robotRightBack
     rulesMatrix[1][6][1] = robotRightBack
@@ -320,7 +320,7 @@ def main():
     rulesMatrix[1][6][3] = robotRightFront
     rulesMatrix[1][6][4] = robotRightFront
 
-    #far
+    #far tá ok (como não né)
 
     rulesMatrix[2][0][0] = robotLeftBack
     rulesMatrix[2][0][1] = robotLeftBack
@@ -334,29 +334,29 @@ def main():
     rulesMatrix[2][1][3] = robotLeftFront
     rulesMatrix[2][1][4] = robotLeftFront
 
-    rulesMatrix[2][2][0] = robotForward
-    rulesMatrix[2][2][1] = robotForward
-    rulesMatrix[2][2][2] = robotForward
-    rulesMatrix[2][2][3] = robotForward
-    rulesMatrix[2][2][4] = robotForward
+    rulesMatrix[2][2][0] = robotLeftFront
+    rulesMatrix[2][2][1] = robotLeftFront
+    rulesMatrix[2][2][2] = robotLeftFront
+    rulesMatrix[2][2][3] = robotLeftFront
+    rulesMatrix[2][2][4] = robotLeftFront
 
-    rulesMatrix[2][3][0] = robotRightFront
-    rulesMatrix[2][3][1] = robotRightFront
-    rulesMatrix[2][3][2] = robotRightFront
-    rulesMatrix[2][3][3] = robotRightFront
-    rulesMatrix[2][3][4] = robotRightFront
+    rulesMatrix[2][3][0] = robotForward
+    rulesMatrix[2][3][1] = robotForward
+    rulesMatrix[2][3][2] = robotForward
+    rulesMatrix[2][3][3] = robotForward
+    rulesMatrix[2][3][4] = robotForward
 
-    rulesMatrix[2][4][0] = robotRightBack
-    rulesMatrix[2][4][1] = robotRightBack
-    rulesMatrix[2][4][2] = robotRightBack
-    rulesMatrix[2][4][3] = robotRightBack
-    rulesMatrix[2][4][4] = robotRightBack
+    rulesMatrix[2][4][0] = robotRightFront
+    rulesMatrix[2][4][1] = robotRightFront
+    rulesMatrix[2][4][2] = robotRightFront
+    rulesMatrix[2][4][3] = robotRightFront
+    rulesMatrix[2][4][4] = robotRightFront
 
-    rulesMatrix[2][5][0] = robotRightBack
-    rulesMatrix[2][5][1] = robotRightBack
-    rulesMatrix[2][5][2] = robotRightBack
-    rulesMatrix[2][5][3] = robotRightBack
-    rulesMatrix[2][5][4] = robotRightBack
+    rulesMatrix[2][5][0] = robotRightFront
+    rulesMatrix[2][5][1] = robotRightFront
+    rulesMatrix[2][5][2] = robotRightFront
+    rulesMatrix[2][5][3] = robotRightFront
+    rulesMatrix[2][5][4] = robotRightFront
 
     rulesMatrix[2][6][0] = robotRightBack
     rulesMatrix[2][6][1] = robotRightBack
